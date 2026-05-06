@@ -1,0 +1,26 @@
+services:
+  # PostgreSQL Container for Data Inventory
+  db:
+    image: postgres:16
+    container_name: inventory-postgres
+    environment:
+      POSTGRES_USER: notxeno01
+      POSTGRES_PASSWORD: notxeno
+      POSTGRES_DB: inventory_db
+    ports:
+      - "5432:5432"
+    networks:
+      - inventory-network
+
+  # MongoDB Container for API Logging
+  mongodb:
+    image: mongo:latest
+    container_name: inventory-mongodb
+    ports:
+      - "27017:27017"
+    networks:
+      - inventory-network
+
+networks:
+  inventory-network:
+    driver: bridge
