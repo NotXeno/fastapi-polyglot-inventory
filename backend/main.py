@@ -1,8 +1,17 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uuid
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (CRUD)
+    allow_headers=["*"],  
+)
 
 # Phase 1 Model Data
 class Item(BaseModel):
@@ -47,10 +56,10 @@ def update_item(item_id: str, updated_item: Item):
 @app.delete("/item/{item_id}")
 def delete_item(item_id: str):
     for index, item in enumerate(inventory_db):
-        if item.id == item.id:
+        if item.id == item_id:
             inventory_db.pop(index)
             return {"message" : "Item deleted successfully"}
-        raise HTTPException(status_code=404, detail="Item not found")
+    raise HTTPException(status_code=404, detail="Item not found")
 
 #LIST VIEW : Get all items basic information in the inventory (GET /items)
 @app.get("/items")
