@@ -6,6 +6,14 @@ from typing import List
 from sqlalchemy import create_engine, Column, String, Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
+from motor.motor_asyncio import AsyncIOMotorClient
+from datetime import datetime
+from starlette.requests import Request 
+
+MONGO_DETAILS = "mongodb://localhost:27017"
+mongo_client = AsyncIOMotorClient(MONGO_DETAILS)
+mongo_db = mongo_client.inventory_logs # Database Logs
+mongo_collection = mongo_db.get_collection("api_logs") # API Collection Logs
 
 # Connection Setup to the Docker
 DATABASE_URL = "postgresql://notxeno01:notxeno@localhost:5432/inventory_db"
@@ -35,6 +43,38 @@ app.add_middleware(
     allow_methods=["*"],  # Allow all HTTP methods (CRUD)
     allow_headers=["*"],  
 )
+
+# Phase 3 Logging Middleware
+@app.middleware("http")
+async def log_requests (request: Request, call_next):
+
+    # Define the label for the URL and methods
+    action_map = {
+        ("POST", "/item"): "ADD_INVENTORY",
+        ("GET", "/items"): "LIST_INVENTORY",
+        ("PUT", "/item/"): "EDIT_INVENTORY",
+        ("DELETE", "/item/"): "DELETE_INVENTORY"
+    }
+
+    # Match the request with action_map
+    action = "UNKNOWN"
+    for (method, path), act in action_map.items():
+        if request.method == method and request.url.path.startswith(path):
+            action = act
+            break
+
+    response = await call_next(request) # Let request go to the CRUD functions
+
+    # Write the data to MongoDB afterr requests done
+    log_entry = {
+        "timestamp" : datetime.utcnow().isoformat() + "Z", # Time happened
+        "method" : request.method, # HTTP method
+        "endpoint" : request.url.path, # Endpoint URL
+        "action" : action # Action label
+    }
+
+    await mongo_collection.insert_one(log_entry) # Insert log to MongoDB
+    return response
 
 # Phase 1 Model Data
 class Item(BaseModel):

@@ -102,8 +102,10 @@
 
         // Show View Form (Greyed out)
         async function showViewForm(id) {
-            const response = await fetch(`${apiUrl}/item/${id}`);
-            const item = await response.json();
+            const response = await fetch(`${apiUrl}/items`);
+            const items = await response.json();
+
+            const item = items.find (i => i.id === id);
 
             document.getElementById("formModal").classList.remove("hidden");
             document.getElementById("modalTitle").innerText = "View Item Details";
@@ -111,7 +113,7 @@
             // Filling the form with item data
             document.getElementById("itemId").value = item.id;
             document.getElementById("itemName").value = item.short_name;
-            document.getElementById("itemDesc").value = item.description;
+            document.getElementById("itemDesc").value = item.description || "";
             document.getElementById("itemPrice").value = item.price;
             document.getElementById("itemAmount").value = item.amount;
 
