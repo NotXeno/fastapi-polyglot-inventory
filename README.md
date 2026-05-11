@@ -18,11 +18,12 @@ Before run the program, you need to :
 1. Navigate the terminal to the backend folder
 2. Activate the virtual environments
    **Windows:** `.\venv\Scripts\activate`
-3. Install the requirements library
+   **Linux:**   `source venv/bin/activate`
+4. Install the requirements library
    ```bash
    pip install -r requirements.txt
    ```
-4. Start the server
+5. Start the server
    ```bash
    fastapi dev main.py
    ```
