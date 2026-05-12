@@ -13,6 +13,10 @@ Before run the program, you need to :
    docker-compose up -d
    ```
 2. Check the Docker Desktop if it's run already
+3. After the container running, type this into the browser
+```bash
+localhost  
+```
 
 ### Step 2 (Optional) : Checking MongoDB Logs
 ```bash

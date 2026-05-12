@@ -1,11 +1,11 @@
 # Python Version
-FROM python:3.9-slim
+FROM python:3.13-slim
 
 # Working Directory
 WORKDIR /app
 
 # Install Dependencies
-COPY requirements.txt .
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt                                                                                                                     
 
 # Copy Backend code to container
