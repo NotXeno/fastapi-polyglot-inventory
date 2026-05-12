@@ -12,7 +12,7 @@ Before run the program, you need to :
    ```bash
    docker-compose up -d
    ```
-3. Check the Docker Desktop if it's run already
+2. Check the Docker Desktop if it's run already
 
 ### Step 2 (Optional) : Checking MongoDB Logs
 ```bash
