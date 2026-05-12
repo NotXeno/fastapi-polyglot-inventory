@@ -21,6 +21,29 @@ services:
     networks:
       - inventory-network
 
+  # FastAPI Backend Container
+  backend:
+    build: ./backend
+    container_name: inventory-backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - mongodb
+    networks:
+      - inventory-network
+
+  # Nginx Frontend Container
+  frontend: 
+    build: ./frontend
+    container_name: inventory-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - inventory-network
+      
 networks:
   inventory-network:
     driver: bridge
